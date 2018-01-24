@@ -587,7 +587,7 @@ class NginxConfigurator(common.Installer):
         regex += ')$")'
 
         redirect_block = [[
-            ['\n    ', 'if', '($host', ' ', '~*', regex],
+            ['\n    ', 'if', ' ', '($host', ' ', '~*', regex],
             [['\n        ', 'return', ' ', '301', ' ', 'https://$host$request_uri'],
             '\n    ']],
             ['\n']]
