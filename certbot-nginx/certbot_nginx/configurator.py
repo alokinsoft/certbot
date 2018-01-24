@@ -582,10 +582,15 @@ class NginxConfigurator(common.Installer):
     def _add_redirect_block(self, vhost, active=True):
         """Add redirect directive to vhost
         """
-        if active:
-            redirect_block = REDIRECT_BLOCK
-        else:
-            redirect_block = REDIRECT_COMMENT_BLOCK
+        regex = '"^('
+        regex += "|".join(name.replace(".", "\\.") for name in vhost.names)
+        regex += ')$")'
+
+        redirect_block = [[
+            ['\n    ', 'if', '($host', ' ', '~*', regex],
+            [['\n        ', 'return', ' ', '301', ' ', 'https://$host$request_uri'],
+            '\n    ']],
+            ['\n']]
 
         self.parser.add_server_directives(
             vhost, redirect_block, replace=False)
